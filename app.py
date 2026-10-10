@@ -2,37 +2,67 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.title('California Housing Data (1990) by xpp')
+st.set_page_config(
+    page_title="Housing App",
+    page_icon="🏠",
+    layout="wide"
+)
 
-df = pd.read_csv('housing.csv')
+st.title("🏠 Housing App")
 
-house_value_filter = st.slider('Minimal Median House Value', 0, 500001, 200000)
+# Sidebar for navigation
+page = st.sidebar.radio(
+    "Navigation",
+    ["Home", "Data Analysis"]
+)
 
-st.subheader('See more filters in the sidebar:')
+if page == "Home":
+    st.write("""
+    Welcome to the Housing App! This application helps you explore and analyze housing data with ease.
+    
+    Use the navigation menu on the left to explore different features and pages.
+    """)
+    
+    st.divider()
+    
+    st.subheader("About This App")
+    st.info("""
+    This is a Streamlit application designed to provide insights into housing data.
+    Navigate through the different pages using the sidebar menu to access various features.
+    """)
 
-location_filter = st.sidebar.multiselect(
-    'Choose the location type',
-    df.ocean_proximity.unique(),
-    df.ocean_proximity.unique())
-
-income_filter = st.sidebar.radio(
-    'Choose income level',
-    ('Low', 'Medium', 'High'))
-
-df = df[df.median_house_value >= house_value_filter]
-
-df = df[df.ocean_proximity.isin(location_filter)]
-
-if income_filter == 'Low':
-    df = df[df.median_income <= 2.5]
-elif income_filter == 'Medium':
-    df = df[(df.median_income > 2.5) & (df.median_income < 4.5)]
-elif income_filter == 'High':
-    df = df[df.median_income >= 4.5]
-
-st.map(df)
-
-st.subheader('Histogram of Median House Value')
-fig, ax = plt.subplots()
-df.median_house_value.plot.hist(ax=ax, bins=30)
-st.pyplot(fig)
+elif page == "Data Analysis":
+    st.subheader("California Housing Data (1990)")
+    
+    df = pd.read_csv('housing.csv')
+    
+    house_value_filter = st.slider('Minimal Median House Value', 0, 500001, 200000)
+    
+    st.write("See more filters in the sidebar:")
+    
+    location_filter = st.sidebar.multiselect(
+        'Choose the location type',
+        df.ocean_proximity.unique(),
+        df.ocean_proximity.unique())
+    
+    income_filter = st.sidebar.radio(
+        'Choose income level',
+        ('Low', 'Medium', 'High'))
+    
+    df = df[df.median_house_value >= house_value_filter]
+    
+    df = df[df.ocean_proximity.isin(location_filter)]
+    
+    if income_filter == 'Low':
+        df = df[df.median_income <= 2.5]
+    elif income_filter == 'Medium':
+        df = df[(df.median_income > 2.5) & (df.median_income < 4.5)]
+    elif income_filter == 'High':
+        df = df[df.median_income >= 4.5]
+    
+    st.map(df)
+    
+    st.subheader('Histogram of Median House Value')
+    fig, ax = plt.subplots()
+    df.median_house_value.plot.hist(ax=ax, bins=30)
+    st.pyplot(fig)
