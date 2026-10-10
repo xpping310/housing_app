@@ -18,7 +18,7 @@ col1, col2, col3 = st.columns(3)
 
 with col2:
     if st.button("📊 Go to App", use_container_width=True):
-        st.switch_page("app.py")
+        st.switch_page("pages/app.py")
 
 st.divider()
 
